@@ -10,7 +10,7 @@ class DrawableObj
 class GrManager
 {
   public:
-    List list;
+    List<DrawableObj*> list;
     void registrate(DrawableObj* dObj);
     void unregistrate(DrawableObj* dObj);
     void drawAll(sf::RenderWindow* pointer);
@@ -20,7 +20,7 @@ class GrManager
 
 void GrManager::registrate(DrawableObj* dObj)
 {
-  list.append((void*) dObj);
+  list.append(dObj);
 }
 
 void DrawableObj::draw(sf::RenderWindow* pointer)
@@ -29,14 +29,14 @@ void DrawableObj::draw(sf::RenderWindow* pointer)
 
 void GrManager::unregistrate(DrawableObj* dObj)
 {
-  list.remove((void*) dObj);
+  list.remove(dObj);
 }
 
 void GrManager::drawAll(sf::RenderWindow* pointer)
 { 
   pointer -> clear();
   for (int j = 0; j < list.len(); j++)
-    (*(DrawableObj*) (list[j])).draw(pointer);
+    (list[j]) -> draw(pointer);
   pointer -> display(); 
 } 
 

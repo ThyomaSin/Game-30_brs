@@ -1,56 +1,67 @@
+template <typename objName>
+
 class Node
 {
   public:
-  void* obj;
+  objName obj;
   Node* next = NULL;
-  Node(void* object, Node* next);
+  Node(objName object, Node* next);
   Node();
 };
+
+template <typename objName>
 
 class List
 {
   public:
-  Node* head = NULL;
-  void pushFront(void* obj);
-  void* popFront();
-  void append(void* obj);
+  Node<objName>* head = NULL;
+
+  void pushFront(objName obj);
+  objName popFront();
+  void append(objName obj);
   //void remove((void*) obj);
-  void* operator[](int j);
+  objName& operator[](int j);
   int len();
-  void remove(void* object);
+  void remove(objName object);
+  ~List();
+  void operator+(List list);
 };  
 
-
-Node::Node(void* object, Node* NEXT)
+template <typename objName>
+Node<objName>::Node(objName object, Node* NEXT)
 {
   this -> obj = object;
   this -> next = NEXT;
 }
 
-Node::Node()
+template <typename objName>
+Node<objName>::Node()
 {
-}
- 
-void List::pushFront(void* add)
-{
-  Node* newObj = new Node;
-  *newObj = Node(add, this -> head);
-  head = newObj;
 }
 
-void* List::popFront()
+template <typename objName> 
+void List<objName>::pushFront(objName add)
+{
+  head = new Node<objName>(add, this -> head);
+}
+
+template <typename objName>
+objName List<objName>::popFront()
 {
   if (head == NULL)
-    return (void*) NULL;
-  Node* pointer = head;
+    return NULL;
+  objName object = head -> obj;
+  Node<objName>** node = &head;
   head = head -> next;
-  return pointer -> obj;
+  delete *node;
+  return object;
 }
 
-void List::append(void* object)
+template <typename objName>
+void List<objName>::append(objName object)
 {
-  Node* newNode = new Node;
-  Node* current = head;
+  Node<objName>* newNode = new Node<objName>;
+  Node<objName>* current = head;
   
   if (!current)
   {
@@ -66,9 +77,10 @@ void List::append(void* object)
   newNode -> obj = object;
 }
 
-void* List::operator[](int i)
+template <typename objName>
+objName& List<objName>::operator[](int i)
 {
-  Node* current = head;
+  Node<objName>* current = head;
   int j = 0;
   while (i != j)
   {
@@ -80,10 +92,11 @@ void* List::operator[](int i)
   return current -> obj;
 }
 
-int List::len()
+template <typename objName>
+int List<objName>::len()
 {
   int i = 0;
-  Node* current = head;
+  Node<objName>* current = head;
   if (!current)
       return i;
   while (current -> next != NULL)
@@ -108,9 +121,10 @@ int List::len()
   return i;
 } */ 
 
-void List::remove(void* object)
+template <typename objName>
+void List<objName>::remove(objName object)
 {
-  Node* current = head;
+  Node<objName>* current = head;
   if (head -> obj == object)
   {
     this -> popFront();
@@ -124,18 +138,36 @@ void List::remove(void* object)
     current = current -> next;
   }
   
-  
+  Node<objName>** node;
   if (current -> next != NULL)
   {
-    current -> next = current -> next -> next;
-    
+    node = &(current -> next);
+    current -> next = current -> next -> next;   
   }
-   
+  
+  delete *node; 
   //else return; 
 }
 
+template <typename objName>
+List<objName>::~List()
+{
+  while (head != NULL)
+    this -> popFront();
+}
 
-
+template <typename objName>
+void List<objName>::operator+(List<objName> list)
+{
+  int i = this -> len();
+  Node<objName>* current = this -> head;
+  for(int j = 0; j < len - 1; j++)
+    current = current -> next;
+  
+  if (!head)
+    this -> head = list.head;
+  current -> next = list.head;
+}
 
 
 
